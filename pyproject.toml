@@ -1,0 +1,11 @@
+[project]
+name = "meetings"
+version = "0.1.0"
+description = "Automated meeting transcription with speaker diarization"
+requires-python = ">=3.12"
+dependencies = [
+    "mlx-whisper>=0.4",
+    "pyannote-audio>=3.1",
+    "soundfile>=0.12",
+    "watchdog>=4.0.0",
+]

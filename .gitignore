@@ -1,0 +1,13 @@
+.venv/
+.env
+*.wav
+__pycache__/
+*.pyc
+
+recordings/
+transcripts/
+notes/
+
+# macOS
+.DS_Store
+
