@@ -32,8 +32,9 @@ cd verbatim
 
 **2. Accept the pyannote model licenses on HuggingFace**
 
-Visit both model pages while logged in and accept the license:
+Visit each model page while logged in and accept the license:
 - [pyannote/speaker-diarization-3.1](https://huggingface.co/pyannote/speaker-diarization-3.1)
+- [pyannote/speaker-diarization-community-1](https://huggingface.co/pyannote/speaker-diarization-community-1)
 - [pyannote/segmentation-3.0](https://huggingface.co/pyannote/segmentation-3.0)
 
 **3. Create a HuggingFace access token**
