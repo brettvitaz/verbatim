@@ -10,6 +10,8 @@ Transcription runs on Apple Silicon GPU via [mlx-whisper](https://github.com/ml-
 [00:01:04] SPEAKER_00: Let's start with the naming conventions.
 ```
 
+> **Note:** Model files are large and downloaded automatically on first use. Whisper large-v3 is ~3 GB; pyannote diarization models add another ~1 GB. Ensure you have a good internet connection and sufficient disk space before running for the first time.
+
 ---
 
 ## Requirements
