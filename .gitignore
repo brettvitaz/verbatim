@@ -4,9 +4,12 @@
 __pycache__/
 *.pyc
 
-recordings/
-transcripts/
-notes/
+recordings/*
+!recordings/.gitkeep
+transcripts/*
+!transcripts/.gitkeep
+notes/*
+!notes/.gitkeep
 
 # macOS
 .DS_Store
