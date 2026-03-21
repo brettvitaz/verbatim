@@ -1,5 +1,5 @@
 [project]
-name = "meetings"
+name = "verbatim"
 version = "0.1.0"
 description = "Automated meeting transcription with speaker diarization"
 requires-python = ">=3.12"
