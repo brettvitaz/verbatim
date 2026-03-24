@@ -54,7 +54,13 @@ uv run transcribe.py --watch
 uv run transcribe.py --no-diarize
 
 # Use a smaller/faster model
-uv run transcribe.py --model medium
+uv run transcribe.py --model whisper-medium-mlx
+
+# Force CPU for diarization (escape hatch)
+uv run transcribe.py --diarize-device cpu
+
+# Validate that MPS produces correct diarization results
+uv run transcribe.py --verify-mps recordings/file.m4a
 ```
 
 Output is written to `transcripts/<same-basename>.txt` with speaker labels and timestamps:
@@ -63,3 +69,12 @@ Output is written to `transcripts/<same-basename>.txt` with speaker labels and t
 [00:00:12] SPEAKER_00: Welcome everyone. Let's talk about the catalog.
 [00:00:18] SPEAKER_01: Sure, I have some updates on the schema.
 ```
+
+### GPU acceleration
+
+Both pipeline stages run on Apple Silicon GPU:
+
+- **Transcription** — mlx-whisper via Metal (MLX framework)
+- **Diarization** — pyannote segmentation model via MPS (PyTorch); auto-detected, no configuration needed
+
+The diarization ONNX embedding model falls back to CPU internally (expected behavior). Use `--diarize-device cpu` to force full CPU diarization if needed. Run `--verify-mps` once after setup to confirm MPS produces correct results on your hardware.

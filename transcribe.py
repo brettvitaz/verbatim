@@ -72,6 +72,16 @@ def transcribe_audio(wav_path: Path, model: str) -> dict:
         path_or_hf_repo=repo,
         word_timestamps=True,
         verbose=False,
+        # Suppress hallucinations on silent/low-content audio segments.
+        # no_speech_threshold: discard segments where the model is >60% confident
+        #   there's no speech (default 0.6 — kept explicit for clarity).
+        # compression_ratio_threshold: discard segments with highly repetitive text,
+        #   e.g. "Good. Good. Good. Good." (default 2.4, lowered to catch more loops).
+        # condition_on_previous_text: don't feed prior output as a prompt for the
+        #   next chunk — prevents one hallucination cascading into the next.
+        no_speech_threshold=0.6,
+        compression_ratio_threshold=2.0,
+        condition_on_previous_text=False,
     )
 
 
