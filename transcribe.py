@@ -33,6 +33,16 @@ from pathlib import Path
 RECORDINGS_DIR = Path(__file__).parent / "recordings"
 TRANSCRIPTS_DIR = Path(__file__).parent / "transcripts"
 MLX_COMMUNITY = "mlx-community/"
+# Extensions picked up automatically when no files are given on the command line
+DEFAULT_EXTENSIONS = (".m4a", ".mp3")
+
+
+def find_recordings() -> list[Path]:
+    """Return all recordings in recordings/ with a default extension, sorted by name."""
+    return sorted(
+        p for p in RECORDINGS_DIR.iterdir()
+        if p.is_file() and p.suffix.lower() in DEFAULT_EXTENSIONS
+    )
 
 
 def load_env():
@@ -266,7 +276,7 @@ def format_timestamp(seconds: float) -> str:
     return f"{h:02d}:{m:02d}:{sec:02d}" if h else f"{m:02d}:{sec:02d}"
 
 
-def process_recording(m4a_path: Path, args: argparse.Namespace, hf_token: str | None) -> None:
+def process_recording(audio_path: Path, args: argparse.Namespace, hf_token: str | None) -> None:
     """Convert, transcribe, diarize, and save transcript for a single recording.
 
     Checkpoints (kept until manually deleted):
@@ -274,23 +284,23 @@ def process_recording(m4a_path: Path, args: argparse.Namespace, hf_token: str | 
       transcripts/<stem>.json      — whisper segments (skip re-transcription on retry)
     """
     TRANSCRIPTS_DIR.mkdir(exist_ok=True)
-    stem = m4a_path.stem
+    stem = audio_path.stem
     transcript_path = TRANSCRIPTS_DIR / f"{stem}.txt"
     wav_checkpoint = TRANSCRIPTS_DIR / f"{stem}.wav"
     segments_checkpoint = TRANSCRIPTS_DIR / f"{stem}.json"
 
     if transcript_path.exists():
-        print(f"  Skipping {m4a_path.name} (transcript already exists)")
+        print(f"  Skipping {audio_path.name} (transcript already exists)")
         return
 
-    print(f"\nProcessing: {m4a_path.name}")
+    print(f"\nProcessing: {audio_path.name}")
 
     # Step 1: Convert to WAV (skip if checkpoint exists)
     if wav_checkpoint.exists():
         print("  [checkpoint] Reusing existing WAV.")
     else:
         print("  Converting to WAV...")
-        convert_to_wav(m4a_path, wav_checkpoint)
+        convert_to_wav(audio_path, wav_checkpoint)
         print("  [checkpoint] WAV saved.")
 
     # Step 2: Transcribe (skip if checkpoint exists)
@@ -402,9 +412,9 @@ def main():
         if args.files:
             target = args.files[0]
         else:
-            recordings = sorted(RECORDINGS_DIR.glob("*.m4a"))
+            recordings = find_recordings()
             if not recordings:
-                print("No .m4a recordings found in recordings/")
+                print("No .m4a or .mp3 recordings found in recordings/")
                 sys.exit(1)
             target = recordings[0]
         # Ensure WAV exists (convert if needed)
@@ -420,16 +430,16 @@ def main():
         for f in args.files:
             process_recording(f, args, hf_token)
     elif args.watch:
-        for m4a in sorted(RECORDINGS_DIR.glob("*.m4a")):
-            process_recording(m4a, args, hf_token)
+        for recording in find_recordings():
+            process_recording(recording, args, hf_token)
         watch_mode(args, hf_token)
     else:
-        recordings = sorted(RECORDINGS_DIR.glob("*.m4a"))
+        recordings = find_recordings()
         if not recordings:
-            print("No .m4a recordings found in recordings/")
+            print("No .m4a or .mp3 recordings found in recordings/")
             sys.exit(0)
-        for m4a in recordings:
-            process_recording(m4a, args, hf_token)
+        for recording in recordings:
+            process_recording(recording, args, hf_token)
         print("\nDone.")
 
 
