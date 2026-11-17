@@ -2,7 +2,7 @@
 name = "verbatim"
 version = "0.1.0"
 description = "Automated meeting transcription with speaker diarization"
-requires-python = ">=3.12"
+requires-python = "~=3.13.0"
 dependencies = [
     "mlx-whisper>=0.4",
     "pyannote-audio>=3.1",
